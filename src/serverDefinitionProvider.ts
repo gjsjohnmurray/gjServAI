@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { logChannel, serverManagerApi } from './extension';
+import { logChannel } from './extension';
 import { getServerNamespaceSpec, IServerNamespaceSpec, resolveCredentials } from './utils';
 
 export class ServerDefinitionProvider implements vscode.McpServerDefinitionProvider {
