@@ -22,12 +22,15 @@ export class ServerDefinitionProvider implements vscode.McpServerDefinitionProvi
 			const mapServerNamespaceSpec = new Map<IServerNamespaceSpec, string>();
 			for await (const folder of vscode.workspace.workspaceFolders ?? []) {
 				const serverNamespaceSpec = await getServerNamespaceSpec(folder.uri);
-					if (serverNamespaceSpec) {
-						mapServerNamespaceSpec.set(serverNamespaceSpec, `${serverNamespaceSpec.name}:${serverNamespaceSpec.namespace}`);
+				if (serverNamespaceSpec) {
+					if (serverNamespaceSpec.name === '') {
+						serverNamespaceSpec.name = folder.name;
 					}
+					mapServerNamespaceSpec.set(serverNamespaceSpec, `${serverNamespaceSpec.name}:${serverNamespaceSpec.namespace}`);
+				}
 			}
 
-			for (const [serverNamespaceSpec, label] of mapServerNamespaceSpec.entries()) {
+			for (const [_serverNamespaceSpec, label] of mapServerNamespaceSpec.entries()) {
 				output.push(new vscode.McpStdioServerDefinition(
 					`intersystemsObjectscriptRoutine @ ${label}`,
 					'npx',
