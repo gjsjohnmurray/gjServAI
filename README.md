@@ -4,17 +4,20 @@ This VS Code extension wraps MCP servers that require InterSystems credentials i
 
 It currently offers a single MCP server called [intersystemsObjectscriptRoutine](https://www.npmjs.com/package/intersystems-objectscript-routine-mcp). Learn more about it on [InterSystems Developer Community](https://community.intersystems.com/post/no-hallucinate-mcp-real-time-routine-context-objectscript).
 
+To chat with MCP servers from VS Code you first need to be set up to use [GitHub Copilot](https://code.visualstudio.com/docs/copilot/setup).
+
 ## Getting Started
 
 1. Have at least one folder open in VS Code. The folder(s) of your workspace can be on the local filesystem (for client-side editing) or specify an IRIS server namespace (for server-side editing).
 2. From Command Palette run `MCP: List Servers`.
 3. Each distinct 'server:namespace' target of your workspace will show as a row in the quickpick list.
 4. Choose one, then on the next quickpick choose `Start Server`.
-5. If prompted, allow the 'gj :: servAI' extension to sign in using InterSystems Server Credentials. It will now be able to retrieve a stored password for the server connection and supply it to the MCP server you selected.
-6. On the Output tab of the VS Code Panel a channel will show messages as the MCP server process starts and connects to the target server.
-7. Now you can use VS Code's Chat view to ask MCP for assistance. For example you could ask 'Use MCP to discover whether a routine named FooBar exists'.
-8. Initially Chat asks for permission to use the MCP server. Grant the level of permission you are happy with.
-9. Wait for the response, then continue the conversation as desired. For example you could ask 'What about one called %SS'.
+5. If you receive a notification about needing to install npx, which is a component of Node.js required by the intersystemsObjectscriptRoutine MCP server, do this. Take the installation defaults, then restart VS Code and redo the steps above.
+6. If prompted, allow the 'gj :: servAI' extension to sign in using InterSystems Server Credentials. It will now be able to retrieve a stored password for the server connection and supply it to the MCP server you selected.
+7. On the Output tab of the VS Code Panel a channel will show messages as the MCP server process starts and connects to the target server.
+8. Now you can use VS Code's Chat view to ask MCP for assistance. For example you could ask 'Use MCP to discover whether a routine named FooBar exists'.
+9. Initially Chat asks for permission to use the MCP server. Grant the level of permission you are happy with.
+10. Wait for the response, then continue the conversation as desired. For example you could ask 'What about one called %SS'.
 
 ## Release Notes
 
