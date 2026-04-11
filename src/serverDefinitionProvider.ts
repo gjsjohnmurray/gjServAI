@@ -26,15 +26,16 @@ export class ServerDefinitionProvider implements vscode.McpServerDefinitionProvi
 					if (serverNamespaceSpec.name === '') {
 						serverNamespaceSpec.name = folder.name;
 					}
-					mapServerNamespaceSpec.set(serverNamespaceSpec, `${serverNamespaceSpec.name}:${serverNamespaceSpec.namespace}`);
+					mapServerNamespaceSpec.set(serverNamespaceSpec, folder.uri.toString());
 				}
 			}
 
-			for (const [_serverNamespaceSpec, label] of mapServerNamespaceSpec.entries()) {
+			for (const [serverNamespaceSpec, folderUrl] of mapServerNamespaceSpec.entries()) {
 				output.push(new vscode.McpStdioServerDefinition(
-					`intersystemsObjectscriptRoutine @ ${label}`,
+					`intersystemsObjectscriptRoutine @ ${serverNamespaceSpec.name}:${serverNamespaceSpec.namespace}`,
 					'npx',
-					["-y", "intersystems-objectscript-routine-mcp"]
+					["-y", "intersystems-objectscript-routine-mcp"],
+					{ folderUrl: folderUrl }
 				));
 			}
 
@@ -48,22 +49,27 @@ export class ServerDefinitionProvider implements vscode.McpServerDefinitionProvi
 			if (server instanceof vscode.McpStdioServerDefinition && server.args[1] === 'intersystems-objectscript-routine-mcp') {
 				const [name, namespace] = server.label.split(' @ ')[1].split(':');
 
-				const serverSpec = await serverManagerApi.getServerSpec(name);
-				if (!serverSpec) {
+				const folderUrl = server.env?.folderUrl;
+				if (!folderUrl) {
+					throw new Error('No folderUrl passed in env');
+				}
+
+				const serverNamespaceSpec = await getServerNamespaceSpec(vscode.Uri.parse(folderUrl as string));
+				if (!serverNamespaceSpec) {
 					throw new Error('Selected server not found');
 				}
-				const serverUrl = `${serverSpec.webServer.scheme ?? 'http'}://${serverSpec.webServer.host}:${serverSpec.webServer.port}${serverSpec.webServer.pathPrefix ?? ''}`;
-				await resolveCredentials(serverSpec);
-				if (!serverSpec.username || !serverSpec.password) {
+				const serverUrl = `${serverNamespaceSpec.webServer.scheme ?? 'http'}://${serverNamespaceSpec.webServer.host}:${serverNamespaceSpec.webServer.port}${serverNamespaceSpec.webServer.pathPrefix ?? ''}`;
+				await resolveCredentials(serverNamespaceSpec);
+				if (!serverNamespaceSpec.username || !serverNamespaceSpec.password) {
 					throw new Error(`No credentials obtained for server ${serverUrl}`);
 				}
 				server.env = {
 					// eslint-disable-next-line @typescript-eslint/naming-convention
 					IRIS_URL: serverUrl,
 					// eslint-disable-next-line @typescript-eslint/naming-convention
-					IRIS_USERNAME: serverSpec.username,
+					IRIS_USERNAME: serverNamespaceSpec.username,
 					// eslint-disable-next-line @typescript-eslint/naming-convention
-					IRIS_PASSWORD: serverSpec.password,
+					IRIS_PASSWORD: serverNamespaceSpec.password,
 					// eslint-disable-next-line @typescript-eslint/naming-convention
 					IRIS_NAMESPACE: namespace,
 				};

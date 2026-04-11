@@ -10,6 +10,8 @@ export interface IServerNamespaceSpec extends serverManager.IServerSpec {
 
 /**
  * Get a server+namespace specification for a given URI, using the ObjectScript extension's API if available.
+ * Doing this rather than using the Server Manager API directly allows us to support servers that aren't registered with Server Manager, as long as they are recognized by the ObjectScript extension.
+ * For example, an objectscript.conn setting that uses the docker-compose object.
  *
  * @param uri The URI of the resource.
  * @returns Server+namespace specification or undefined.
