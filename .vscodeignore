@@ -1,0 +1,12 @@
+# Run 'vsce ls' to verify that the following lines exclude everything not needed in the VSIX.
+**
+!node_modules/@vscode/codicons/**
+!node_modules/@vscode-elements/elements/dist/bundled.js
+!assets/
+!dist/
+!images/
+!CHANGELOG.md
+!LICENSE
+!README.md
+!package.json
+!package.nls.json
