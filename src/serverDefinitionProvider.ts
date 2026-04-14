@@ -2,6 +2,11 @@ import * as vscode from 'vscode';
 import { logChannel } from './extension';
 import { getServerNamespaceSpec, IServerNamespaceSpec, resolveCredentials } from './utils';
 
+type SpecAndFolder = {
+	spec: IServerNamespaceSpec;
+	folderUrl: string;
+};
+
 export class ServerDefinitionProvider implements vscode.McpServerDefinitionProvider {
 	constructor() {
 		logChannel.debug('ServerDefinitionProvider constructor called');
@@ -19,20 +24,20 @@ export class ServerDefinitionProvider implements vscode.McpServerDefinitionProvi
 		return new Promise(async (resolve) => {
 			const output: vscode.McpServerDefinition[] = [];
 
-			const mapServerNamespaceSpec = new Map<IServerNamespaceSpec, string>();
+			const mapServerNamespaceSpec = new Map<string, SpecAndFolder>();
 			for await (const folder of vscode.workspace.workspaceFolders ?? []) {
 				const serverNamespaceSpec = await getServerNamespaceSpec(folder.uri);
 				if (serverNamespaceSpec) {
 					if (serverNamespaceSpec.name === '') {
 						serverNamespaceSpec.name = folder.name;
 					}
-					mapServerNamespaceSpec.set(serverNamespaceSpec, folder.uri.toString());
+					mapServerNamespaceSpec.set(`${serverNamespaceSpec.name}:${serverNamespaceSpec.namespace}`, {spec: serverNamespaceSpec, folderUrl: folder.uri.toString()});
 				}
 			}
 
-			for (const [serverNamespaceSpec, folderUrl] of mapServerNamespaceSpec.entries()) {
+			for (const [_key, { spec, folderUrl }] of mapServerNamespaceSpec.entries()) {
 				output.push(new vscode.McpStdioServerDefinition(
-					`intersystemsObjectscriptRoutine @ ${serverNamespaceSpec.name}:${serverNamespaceSpec.namespace}`,
+					`intersystemsObjectscriptRoutine @ ${spec.name}:${spec.namespace}`,
 					'npx',
 					["-y", "intersystems-objectscript-routine-mcp"],
 					{ folderUrl: folderUrl }

@@ -46,7 +46,7 @@ export async function getServerNamespaceSpec(
 		},
 		username: serverForUri.username,
 		password: serverForUri.password ? serverForUri.password : undefined,
-		description: `Server for folder ${uri.scheme}://${uri.authority}${uri.path}`,
+		description: `${serverForUri.scheme}://${serverForUri.host}:${serverForUri.port}${serverForUri.pathPrefix}`,
 		namespace: serverForUri.namespace
 	};
 }
