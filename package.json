@@ -2,7 +2,7 @@
   "name": "serv-ai",
   "displayName": "gj :: servAI",
   "description": "Provision MCP servers that require InterSystems server credentials",
-  "version": "0.0.1-SNAPSHOT",
+  "version": "0.0.2-SNAPSHOT",
   "preview": true,
   "publisher": "georgejames",
   "icon": "images/extension-icon.png",
