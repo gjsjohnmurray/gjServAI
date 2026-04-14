@@ -1,2 +1,2 @@
-## 0.0.1 (dd-Mmm-yyyy)
+## 0.0.1 (14-Apr-2026)
 - Initial release.
